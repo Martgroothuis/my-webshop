@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Color extends Model
 {
-    public function Product_version()
+    protected $fillable = [
+        'name',
+        'waterless',
+        'rise'
+    ];
+    public function productVersion()
     {
-        return $this->hasMany('App\Product_version');
+        return $this->hasMany('App\ProductVersion');
     }
 }

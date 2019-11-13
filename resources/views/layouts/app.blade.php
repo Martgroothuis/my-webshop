@@ -40,7 +40,12 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('shoppingcart') }}">{{ __('Shoppingcart') }}</a>
+                        </li>
+
                         <!-- Authentication Links -->
+
                         @guest
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
@@ -65,6 +70,8 @@
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
+
+                                <a class="dropdown-item" href="{{ route('orders.index') }}">{{ __('Orders') }}</a>
                             </div>
                         </li>
                         @endguest

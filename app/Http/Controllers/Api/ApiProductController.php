@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Size;
 use App\Product;
 
-class SizeController extends Controller
+class ApiProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        return Product::all();
     }
 
     /**
@@ -37,38 +37,31 @@ class SizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $product = Product::create($request->all());
+
+        return response()->json($product, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
     public function show(Product $product)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        $product = Product::find($product)->first();
+        $product->productVersion;
+        return $product;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(Product $product)
     {
         //
     }
@@ -77,22 +70,27 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, Product $product)
     {
-        //
+        $product->update($request->all());
+
+        return response()->json($product, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        $product->productVersion()->delete();
+
+        return response()->json(null, 204);
     }
 }

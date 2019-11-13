@@ -3,21 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use App\product_version;
+use App\ProductVersion;
 
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function showProduct(Product $product)
-    {
-        $product->price = $product->Product_version->first()->price;
-        return view('product.show', compact('product'));
-    }
+
+    // $products = Product::with(array('Product_version' => function ($query) {
+    //     $query->with(
+    //         array('image' => function ($query) {
+    //             $query->first();
+    //         })
+    //     )->first();
+    // }))->get();
+
 
     public function index()
     {
-        return Product::all();
+        $products = Product::all();
+
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -28,9 +34,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product = Product::find($product)->first();
-        $product->Product_version;
-        return $product;
+        return view('product.show', compact('product'));
     }
 
     /**
@@ -51,10 +55,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-        $product = Product::create($request->all());
-
-        return response()->json($product, 201);
+        //
     }
 
     /**
@@ -77,9 +78,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->update($request->all());
-
-        return response()->json($product, 200);
+        // 
     }
 
     /**
@@ -90,9 +89,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        $product->Product_version()->delete();
-
-        return response()->json(null, 204);
+        // 
     }
 }

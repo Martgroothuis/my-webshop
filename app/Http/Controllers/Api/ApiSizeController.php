@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Size;
 use App\Product;
 
-class SizeController extends Controller
+class ApiSizeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +17,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        return Size::with(['productversion'])->get();
     }
 
     /**
@@ -37,7 +38,9 @@ class SizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $size = Size::create($request->all());
+
+        return response()->json($size, 201);
     }
 
     /**
@@ -46,20 +49,10 @@ class SizeController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($product)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+
+        return Size::where('product_version_id', '=', $product)->get();
     }
 
     /**
@@ -68,7 +61,7 @@ class SizeController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(Size $size)
     {
         //
     }
@@ -80,9 +73,11 @@ class SizeController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, Size $size)
     {
-        //
+        $size->update($request->all());
+
+        return response()->json($size, 200);
     }
 
     /**
@@ -91,8 +86,10 @@ class SizeController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(Size $size)
     {
-        //
+        $size->delete();
+
+        return response()->json(null, 204);
     }
 }

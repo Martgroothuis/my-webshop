@@ -2,33 +2,24 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 
-use App\product_version;
+use App\ProductVersion;
 use App\Size;
 
 use App\Http\Requests;
 
 
-class ShoppingCardController extends Controller
+class ShoppingCartController extends Controller
 {
     // use Session;
 
     public function index(Request $request)
     {
-        $shoppingcardproducts = $request->session()->get('selectedProduct');
-
-        foreach ($shoppingcardproducts as $shoppingcardproduct) {
-            $product_version = Product_version::Where('id', '=', $shoppingcardproduct['product_version_id'])->get()->first();
-            $product_version['price'] = str_replace('.', ',', $product_version->price);
-            $product_version['product_id'] = $product_version->Product;
-            $product_version['size'] = Size::find($shoppingcardproduct['size_id'])->first();
-            $product_version['color_id'] = $product_version->color;
-            $product_version['color_version'] = $product_version->color->waterless === 1 ? 'Waterless®' : '';
-
-            $shoppingcardproducts[0]['product_version_id'] = $product_version;
-        }
-        return $shoppingcardproducts;
+        //    
     }
 
     /**
@@ -49,11 +40,7 @@ class ShoppingCardController extends Controller
      */
     public function store(Request $request)
     {
-        // $array = $request->session()->get('selectedProduct');
-        $array[] = ['product_version_id' => $request->selectedProduct, 'size_id' => $request->selectedSize, 'ammount' => 1];
-        $request->session()->put('selectedProduct', $array);
-
-        return $request->session()->get('selectedProduct');
+        //   
     }
 
     /**
@@ -62,9 +49,9 @@ class ShoppingCardController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Request $request)
     {
-        return view('shoppingcard.index');
+        return view('shoppingcart.index');
     }
 
     /**
@@ -86,7 +73,9 @@ class ShoppingCardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-    { }
+    {
+        //
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -94,8 +83,8 @@ class ShoppingCardController extends Controller
      * @param  \App\Sizes  $sizes
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
+    public function destroy(Request $request, $id)
     {
-        //
+        // 
     }
 }

@@ -6,16 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Size extends Model
 {
-    public function Product_version()
+    protected $fillable = [
+        'product_version_id',
+        'waist_size_id',
+        'length_size_id',
+        'stock'
+    ];
+
+    public function productVersion()
     {
-        return $this->belongsTo('App\Product_version');
+        return $this->belongsTo('App\ProductVersion');
     }
-    public function Waist_size()
+    public function waistSize()
     {
-        return $this->belongsTo('App\Waist_size');
+        return $this->belongsTo('App\WaistSize');
     }
-    public function Length_size()
+    public function lengthSize()
     {
-        return $this->belongsTo('App\Length_size');
+        return $this->belongsTo('App\LengthSize');
     }
 }

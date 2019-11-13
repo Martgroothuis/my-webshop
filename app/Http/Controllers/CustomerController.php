@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use Illuminate\Http\Request;
 
-use App\Size;
-use App\Product;
-
-class SizeController extends Controller
+class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -43,32 +41,21 @@ class SizeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Customer $customer)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(Customer $customer)
     {
         //
     }
@@ -77,10 +64,10 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, Customer $customer)
     {
         //
     }
@@ -88,10 +75,10 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(Customer $customer)
     {
         //
     }

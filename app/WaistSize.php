@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Length_size extends Model
+class WaistSize extends Model
 {
-    public function Size()
+    protected $fillable = [
+        'size'
+    ];
+
+    public function size()
     {
         return $this->hasMany('App\Size');
     }

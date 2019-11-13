@@ -17,12 +17,18 @@
       </div>
 
       <b-button variant="primary" v-b-modal.newproductversion>New Product Version</b-button>
-      <b-modal id="newproductversion" ref="newproductversion" title="New Product Version">
+      <b-modal
+        id="newproductversion"
+        ref="newproductversion"
+        title="New Product Version"
+        hide-footer
+      >
         <form method="post" @submit.prevent="create()">
           <input type="hidden" name="_token" :value="csrf" />
           <b-form-group id="input-group-price" label="Price:" label-for="price">
             <b-form-input
               id="price"
+              step="any"
               v-model="form.price"
               type="number"
               required
@@ -30,16 +36,18 @@
             ></b-form-input>
           </b-form-group>
           <b-form-group id="input-group-color" label="Color:" label-for="color">
-            <b-form-input
-              id="color"
-              v-model="form.color"
-              type="number"
-              required
-              placeholder="Enter color"
-            ></b-form-input>
+            <b-form-input autocomplete="off" v-model="form.color" list="my-list-id"></b-form-input>
+
+            <datalist id="my-list-id">
+              <option
+                v-for="color in colors"
+                :value="color.id"
+                v-bind:key="color.id"
+              >{{ color.name }}</option>
+            </datalist>
           </b-form-group>
 
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button block type="submit" variant="primary">Submit</b-button>
         </form>
       </b-modal>
     </div>
@@ -56,24 +64,19 @@
       :busy="mute"
     >
       <template v-slot:cell(actions)="row">
-        <b-button
-          size="sm"
-          variant="danger"
-          @click="del(row.item.id, row.item.name)"
-          class="mr-2"
-        >Delete</b-button>
+        <b-button size="sm" variant="danger" @click="del(row.item.id)" class="mr-2">Delete</b-button>
 
         <b-button
           size="sm"
           variant="info"
-          @click="select(row.item.id, row.item.name)"
+          @click="selectProductVersion(row.item.id)"
           class="mr-2"
         >Select</b-button>
 
         <b-button
           size="sm"
           variant="primary"
-          @click="edit(row.item.id, row.item.name)"
+          @click="edit(row.item.id, row.item.price, row.item.color, row.item.name)"
           class="mr-2"
         >Edit</b-button>
       </template>
@@ -88,35 +91,34 @@
     <b-modal
       id="editproductversion"
       ref="editproductversion"
-      :title="'Edit Product version: ' + this.selectedProduct.id"
+      title="Edit Product version"
+      hide-footer
     >
-      <form method="post" @submit.prevent="update()">
+      <form method="post" @submit.prevent="update(selectedProduct.id, form.price, form.color)">
         <input type="hidden" name="_token" :value="csrf" />
         <b-form-group id="input-group-price" label="Price:" label-for="price">
           <b-form-input
             id="price"
             v-model="form.price"
+            step="any"
             type="number"
-            required
             placeholder="Enter price"
           ></b-form-input>
         </b-form-group>
         <b-form-group id="input-group-color" label="Color:" label-for="color">
-          <b-form-input
-            id="color"
-            v-model="form.color"
-            type="number"
-            required
-            placeholder="Enter color"
-          ></b-form-input>
+          <b-form-input autocomplete="off" v-bind="form.color" id="color" list="my-list-id"></b-form-input>
+
+          <datalist id="my-list-id">
+            <option v-for="color in colors" :value="color.id" v-bind:key="color.id">{{ color.name }}</option>
+          </datalist>
         </b-form-group>
 
-        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button block type="submit" variant="primary">Submit</b-button>
       </form>
     </b-modal>
   </div>
   <div v-else>
-    <p>select a product first pls.</p>
+    <h3>Select a product first.</h3>
   </div>
 </template>
 
@@ -135,7 +137,6 @@ export default {
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content"),
 
-      product: 2,
       mute: false,
       perPage: 10,
       currentPage: 1,
@@ -157,15 +158,14 @@ export default {
         "actions"
       ],
       products: [],
-      selectedProduct: []
+      selectedProduct: [],
+      colors: []
     };
   },
   methods: {
-    // openModal(id) {
-    //   this.product = id;
-    //   console.log(this.product);
-    //   this.$refs["newproductversion"].show();
-    // },
+    selectProductVersion(id) {
+      this.$emit("selectProductVersion", id);
+    },
     create() {
       console.log(this.price);
       this.mute = true;
@@ -197,37 +197,52 @@ export default {
           });
           this.mute = false;
         });
-    },
-    edit(id, name) {
-      this.selectedProduct.id = id;
-      this.selectedProduct.name = name;
-
-      console.log(this.selectedProduct);
-      this.$refs["editproductversion"].show();
-    },
-    update(id, name) {
-      this.mute = true;
-      window.axios.put(`/api/products/${id}`, { name }).then(() => {
-        this.$emit(
-          "toast",
-          "waring",
-          "Update",
-          "Product Version: " + name + " Updated"
-        );
-
-        this.products.find(product => product.id === id).name = name;
+      window.axios.get(`/api/colors`).then(({ data }) => {
+        this.colors = data;
+        // data.forEach(product => {
+        //   this.products.push(new Color(color));
+        // });
         this.mute = false;
       });
     },
-    del(id, name) {
+    edit(id, price, color, name) {
+      this.selectedProduct.id = id;
+      this.form.price = price;
+      this.form.color = color;
+      this.selectedProduct.name = name;
+      console.log(this.form.price);
+
+      // console.log(this.selectedProduct);
+      this.$refs["editproductversion"].show();
+    },
+    update(id, price, color) {
+      this.$refs["editproductversion"].hide();
+
+      console.log(price);
+      console.log(id);
+      console.log(color);
+
+      window.axios
+        .put(`/api/productversions/${id}`, {
+          price: price
+        })
+        .then(() => {
+          this.$emit(
+            "toast",
+            "warning",
+            "Update",
+            "Product Version: " + name + " Updated"
+          );
+
+          console.log(this.products.find(product => product.id === id));
+
+          this.products.find(product => product.id === id).price = price;
+        });
+    },
+    del(id) {
       this.mute = true;
       window.axios.delete(`/api/productversions/${id}`).then(() => {
-        this.$emit(
-          "toast",
-          "danger",
-          "Deletion",
-          "Product Version: " + name + " Deleted"
-        );
+        this.$emit("toast", "danger", "Deletion", "Product Version:  Deleted");
 
         let index = this.products.findIndex(product => product.id === id);
         this.products.splice(index, 1);

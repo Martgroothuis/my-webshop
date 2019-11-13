@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Size;
-use App\Product;
+use App\Status;
 
-class SizeController extends Controller
+class ApiStatusController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        return Status::all();
     }
 
     /**
@@ -37,38 +37,27 @@ class SizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Status::create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Status $status)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        return Color::find($status);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(Status $status)
     {
         //
     }
@@ -77,22 +66,26 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, Status $status)
     {
-        //
+        $status->update($request->all());
+
+        return response()->json($status, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(Status $status)
     {
-        //
+        $status->delete();
+
+        return response()->json(null, 204);
     }
 }

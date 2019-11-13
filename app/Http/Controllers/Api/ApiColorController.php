@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Size;
-use App\Product;
+use App\Color;
 
-class SizeController extends Controller
+class ApiColorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        return Color::all();
     }
 
     /**
@@ -37,38 +37,28 @@ class SizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $color = Color::create($request->all());
+        return Color::find($color->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\color  $color
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(color $color)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        return Color::find($color);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\color  $color
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(color $color)
     {
         //
     }
@@ -77,22 +67,26 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\color  $color
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, color $color)
     {
-        //
+        $color->update($request->all());
+
+        return response()->json($color, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\color  $color
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(color $color)
     {
-        //
+        $color->delete();
+
+        return response()->json(null, 204);
     }
 }

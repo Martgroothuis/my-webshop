@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'ProductController@index');
 
-Route::get('/products/{product}', 'ProductController@showProduct');
+Route::resource('/products', 'ProductController');
+
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 
 
@@ -37,9 +37,19 @@ Route::post('/uploadimages', 'ImageController@UploadImage');
 
 
 
-Route::get('/shoppingcard', 'ShoppingcardController@show');
+Route::get('/shoppingcart', 'ShoppingCartController@show')->name('shoppingcart');
 
-Route::resource('/api/shoppingcard', 'ShoppingCardController');
+Route::resource('/api/shoppingcart', 'Api\ApiShoppingCartController');
+
+Route::resource('/api/orders', 'Api\ApiOrderController');
+
+
+Route::resource('/payments', 'PaymentController')->middleware('auth');
+
+Route::resource('/orders', 'OrderController')->middleware('auth');
+
+
+
 
 
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Size;
-use App\Product;
+use App\WaistSize;
 
-class SizeController extends Controller
+class ApiWaistSizeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        return WaistSize::all();
     }
 
     /**
@@ -37,38 +37,29 @@ class SizeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $waistsize = WaistSize::create($request->all());
+
+        return response()->json($waistsize, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\WaistSize  $waistSize
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(WaistSize $waistsize)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\WaistSize  $waistSize
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(WaistSize $waistsize)
     {
         //
     }
@@ -77,22 +68,26 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\WaistSize  $waistSize
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, WaistSize $waistsize)
     {
-        //
+        $waistsize->update($request->all());
+
+        return response()->json($waistsize, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\WaistSize  $waistSize
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(WaistSize $waistsize)
     {
-        //
+        $waistsize->delete();
+
+        return response()->json(null, 204);
     }
 }

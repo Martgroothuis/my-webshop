@@ -5,7 +5,7 @@
         <div class="w-100" v-for="image in images" v-bind:key="image.id">
           <b-col :class="image.classObject">
             <b-img-lazy
-              thumbnail
+              class="w-100"
               fluid-grow
               :src="image.url"
               blank-height="1000"

@@ -17,11 +17,13 @@
       </div>
 
       <b-button variant="primary" v-b-modal.newproduct>New Product</b-button>
-      <b-modal id="newproduct" ref="newProduct" title="New Product">
+      <b-modal id="newproduct" ref="newProduct" title="New Product" hide-footer>
         <form method="post" @submit.prevent="create()">
           <input type="hidden" name="_token" :value="csrf" />
-          <input class="form-control" v-model="name" type="text" name="name" />
-          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-form-group id="input-group-price" label="Name:" label-for="price">
+            <b-form-input v-model="name" type="text" name="name" required placeholder="Enter Name"></b-form-input>
+          </b-form-group>
+          <b-button block type="submit" variant="primary">Submit</b-button>
         </form>
       </b-modal>
     </div>
@@ -51,6 +53,13 @@
           @click="select(row.item.id, row.item.name)"
           class="mr-2"
         >Select</b-button>
+
+        <b-button
+          size="sm"
+          variant="primary"
+          @click="edit(row.item.id, row.item.name)"
+          class="mr-2"
+        >Edit</b-button>
       </template>
 
       <template v-slot:table-busy>
@@ -60,6 +69,15 @@
         </div>
       </template>
     </b-table>
+    <b-modal id="editproduct" ref="editproduct" title="Edit Product" hide-footer>
+      <form method="post" @submit.prevent="update(selectedProduct.id, name)">
+        <input type="hidden" name="_token" :value="csrf" />
+        <b-form-group id="input-group-name" label="Name:" label-for="name">
+          <b-form-input v-model="name" id="name" type="text" required placeholder="Enter new name"></b-form-input>
+        </b-form-group>
+        <b-button block type="submit" variant="primary">Submit</b-button>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -92,23 +110,17 @@ export default {
         },
         "actions"
       ],
-      products: []
+      products: [],
+      selectedProduct: []
     };
   },
   methods: {
     select(id, name) {
       this.$emit("select", id, name);
     },
-    openModal(id) {
-      this.product = id;
-      console.log(this.product);
-      this.$refs["productVersions"].show();
-    },
     create() {
       console.log(this.name);
-      this.mute = true;
       this.$refs["newProduct"].hide();
-
       window.axios
         .post("/api/products", {
           name: this.name
@@ -120,9 +132,9 @@ export default {
             "Create",
             "Product: " + this.name + " Created"
           );
+          this.name = "";
 
           this.products.push(new Product(data));
-          this.mute = false;
         });
     },
     read() {
@@ -134,22 +146,26 @@ export default {
         this.mute = false;
       });
     },
+    edit(id, name) {
+      this.selectedProduct.id = id;
+      this.selectedProduct.name = name;
+      this.name = name;
+      this.$refs["editproduct"].show();
+    },
     update(id, name) {
-      this.mute = true;
       window.axios.put(`/api/products/${id}`, { name }).then(() => {
         this.$emit(
           "toast",
-          "waring",
+          "warning",
           "Update",
           "Product: " + name + " Updated"
         );
-
+        this.name = "";
+        this.$refs["editproduct"].hide();
         this.products.find(product => product.id === id).name = name;
-        this.mute = false;
       });
     },
     del(id, name) {
-      this.mute = true;
       window.axios.delete(`/api/products/${id}`).then(() => {
         this.$emit(
           "toast",
@@ -157,10 +173,8 @@ export default {
           "Deletion",
           "Product: " + name + " Deleted"
         );
-
         let index = this.products.findIndex(product => product.id === id);
         this.products.splice(index, 1);
-        this.mute = false;
       });
     }
   },

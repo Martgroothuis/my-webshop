@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\product_version;
-use App\color;
-use App\size;
-
-
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ProductVersionController extends Controller
+use App\ProductVersion;
+use App\Color;
+use App\Size;
+
+class ApiProductVersionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +18,8 @@ class ProductVersionController extends Controller
      */
     public function index($product)
     {
-        $product_versions = Product_version::Where('product_id', '=', $product)
-            ->with(['color'])
+        $productVersions = ProductVersion::Where('product_id', '=', $product)
+            ->with(['Color'])
             ->get();
         $i = 0;
         // foreach ($product_versions as $product_version) {
@@ -37,7 +37,7 @@ class ProductVersionController extends Controller
         //     }
         // }
 
-        return $product_versions;
+        return $productVersions;
     }
 
     /**
@@ -58,7 +58,7 @@ class ProductVersionController extends Controller
      */
     public function store(Request $request)
     {
-        $productVersion = product_version::create($request->all());
+        $productVersion = ProductVersion::create($request->all());
 
         return response()->json($productVersion, 201);
     }
@@ -71,11 +71,13 @@ class ProductVersionController extends Controller
      */
     public function show($product)
     {
-        $product_versions = Product_version::Where('product_id', '=', $product)
+        $productVersions = ProductVersion::Where('product_id', '=', $product)
             ->with(['color'])
-            ->with(['size.Waist_size', 'size.Length_size'])
+            ->with(['size.waistSize', 'size.lengthSize'])
             ->get();
-        $i = 0;
+
+
+        // $i = 0;
 
         // foreach ($product_versions as $product_version) {
         //     $i++;
@@ -92,7 +94,7 @@ class ProductVersionController extends Controller
         //     }
         // }
 
-        return $product_versions;
+        return $productVersions;
     }
 
     /**
@@ -101,7 +103,7 @@ class ProductVersionController extends Controller
      * @param  \App\product_version  $product_version
      * @return \Illuminate\Http\Response
      */
-    public function edit(product_version $product_version)
+    public function edit(ProductVersion $productVersion)
     {
         //
     }
@@ -113,11 +115,11 @@ class ProductVersionController extends Controller
      * @param  \App\product_version  $product_version
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, product_version $product_version)
+    public function update(Request $request, ProductVersion $productversion)
     {
-        $product_version->update($request->all());
+        $productversion->update($request->all());
 
-        return response()->json($product_version, 200);
+        return response()->json($productversion, 200);
     }
 
     /**
@@ -126,9 +128,10 @@ class ProductVersionController extends Controller
      * @param  \App\product_version  $product_version
      * @return \Illuminate\Http\Response
      */
-    public function destroy(product_version $productversion)
+    public function destroy(ProductVersion $productversion)
     {
         $productversion->delete();
+        $productversion->image()->delete();
 
         return response()->json(null, 204);
     }

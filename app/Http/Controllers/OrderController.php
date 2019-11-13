@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Color;
+use App\Order;
 use Illuminate\Http\Request;
 
-class ColorController extends Controller
+class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,7 @@ class ColorController extends Controller
      */
     public function index()
     {
-        //
+        return view('orders.index');
     }
 
     /**
@@ -41,10 +45,10 @@ class ColorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\color  $color
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(color $color)
+    public function show(Order $order)
     {
         //
     }
@@ -52,10 +56,10 @@ class ColorController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\color  $color
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(color $color)
+    public function edit(Order $order)
     {
         //
     }
@@ -64,10 +68,10 @@ class ColorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\color  $color
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, color $color)
+    public function update(Request $request, Order $order)
     {
         //
     }
@@ -75,10 +79,10 @@ class ColorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\color  $color
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(color $color)
+    public function destroy(Order $order)
     {
         //
     }

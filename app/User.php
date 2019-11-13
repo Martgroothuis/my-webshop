@@ -45,8 +45,8 @@ class User extends Authenticatable
         return $this->type === self::ADMIN_TYPE;
     }
 
-    public function Admin()
+    public function customer()
     {
-        return 'hoi';
+        return $this->hasOne('App\Customer');
     }
 }

@@ -69,8 +69,6 @@ export default {
         data.forEach(customer => {
           this.customers.push(new Customer(customer));
         });
-
-        console.log(data);
         this.mute = false;
       });
     }

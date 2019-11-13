@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+
+use App\Order;
 use Illuminate\Http\Request;
 
-use App\Size;
-use App\Product;
-
-class SizeController extends Controller
+class ApiOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,17 @@ class SizeController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = auth()->user()->id;
+
+        return Order::where('user_id', '=', $user_id)
+            ->orderBy('created_at', 'desc')
+            ->with(array('ProductOrder' => function ($query) {
+                $query->with(['productVersion'])->with(['productVersion.color'])
+                    ->with(array('productVersion.image' => function ($query) {
+                        $query->get();
+                    }));
+            }))
+            ->get();
     }
 
     /**
@@ -43,32 +53,21 @@ class SizeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Order $order)
     {
-        $productVersions = $product->productVersion;
-        foreach ($productVersions as $productVersion) {
-            $productVersion->size;
-        }
-        foreach ($productVersions as $productVersion) {
-            foreach ($productVersion->size as $sizes) {
-                $sizes->waistSize;
-                $sizes->lengthSize;
-            }
-        }
-        return $productVersions;
-        return Size::all();
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sizes $sizes)
+    public function edit(Order $order)
     {
         //
     }
@@ -77,10 +76,10 @@ class SizeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sizes $sizes)
+    public function update(Request $request, Order $order)
     {
         //
     }
@@ -88,10 +87,10 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sizes  $sizes
+     * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sizes $sizes)
+    public function destroy(Order $order)
     {
         //
     }

@@ -16,8 +16,8 @@ class CreateColorsTable extends Migration
         Schema::create('colors', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->boolean('waterless');
-            $table->boolean('rise');
+            $table->boolean('waterless')->default(0);
+            $table->boolean('rise')->default(0);
             $table->timestamps();
         });
     }

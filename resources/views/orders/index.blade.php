@@ -2,6 +2,6 @@
 
 @section('content')
 
-<shopping-card-component></shopping-card-component>
+<customer-orders-component></customer-orders-component>
 
 @endsection

@@ -10,8 +10,8 @@ class Product extends Model
         'name'
     ];
 
-    public function Product_version()
+    public function productVersion()
     {
-        return $this->hasMany('App\Product_version');
+        return $this->hasMany('App\ProductVersion');
     }
 }

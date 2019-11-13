@@ -13,13 +13,13 @@
           <b-col cols="12" lg="5">
             <!-- componet -->
             <div class="mb-4">
-              <h3 class="text-dark">{{this.product.name}}</h3>
+              <h3 class="text-dark">{{this.productData.name}}</h3>
               <h5 class="text-muted" style="height: 1em;">{{this.selectedProduct.color_version}}</h5>
               <hr class="divider" />
 
               <b-row>
                 <b-col class="d-flex justify-content-between mb-2">
-                  <h4 class="mr-3">{{this.product.price}}</h4>
+                  <h4 class="mr-3">{{ this.productData.price | toCurrency}}</h4>
                   <p
                     class="m-1 text-success"
                     v-if="this.selectedSize.id"
@@ -87,8 +87,8 @@
             </b-row>
             <!-- dd -->
           </b-col>
-          <h1>{{this.selectedSize.waist_size}}</h1>
-          <h1>{{this.selectedSize.length_size}}</h1>
+          <!-- <h1>{{this.selectedSize.waist_size}}</h1>
+          <h1>{{this.selectedSize.length_size}}</h1>-->
         </b-row>
       </b-card>
     </b-container>
@@ -177,6 +177,7 @@ export default {
       selectedWaist_size: "",
       selectedLength_size: "",
       selectedSize: "",
+      productData: "",
       show: true
     };
   },
@@ -203,14 +204,19 @@ export default {
     }
   },
   methods: {
+    formatPrice(value) {
+      let val = (value / 1).toFixed(2).replace(".", ",");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
     addShoppingCard() {
       const data = {
         _token: this.csrf,
-        selectedProduct: this.selectedProduct.id,
-        selectedSize: this.selectedSize.id
+        product_version_id: this.selectedProduct.id,
+        size_id: this.selectedSize.id
       };
-      window.axios.post(`/api/shoppingcard`, data).then(({ data }) => {
+      window.axios.post(`/api/shoppingcart`, data).then(({ data }) => {
         console.log(data);
+        window.location = "/shoppingcart";
       });
     },
     read(id) {
@@ -328,10 +334,13 @@ export default {
       var selectedImage = this.images.find(
         image => image.product_version_id === select
       );
-      //het eerste grote plaatje laten zien
-      selectedImage.classObject["d-none"] = false;
-      // de rand van de tumbnail donker maken voor duidelijkheid
-      selectedImage.classThumbnailObject["bg-dark"] = true;
+
+      if (selectedImage) {
+        //het eerste grote plaatje laten zien
+        selectedImage.classObject["d-none"] = false;
+        // de rand van de tumbnail donker maken voor duidelijkheid
+        selectedImage.classThumbnailObject["bg-dark"] = true;
+      }
 
       //het geselecteerde product opslaan
       this.selectedProduct = this.product_versions.find(
@@ -345,7 +354,7 @@ export default {
       ).version = "dark";
 
       //de prijs updaten van het product
-      this.product.price = this.selectedProduct.price;
+      this.productData.price = this.selectedProduct.price;
 
       //de component updaten
       this.show = false;
@@ -356,10 +365,10 @@ export default {
   },
   created() {
     // de data bruikbaar maken
-    this.product = JSON.parse(this.product);
-    console.log(this.product);
+    this.productData = JSON.parse(this.product);
+    console.log(this.productData);
     // data ophalen als het component aangemaakt is
-    this.read(this.product.id);
+    this.read(this.productData.id);
   }
 };
 </script>
